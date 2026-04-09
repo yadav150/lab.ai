@@ -1,4 +1,588 @@
-index.html      ← Homepage
-upload.html     ← Upload page  
-category.html   ← Category page
-post.html       ← Single post
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mystical Forest - AI Prompt Hub</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            color: #333;
+            padding-top: 80px;
+            line-height: 1.7;
+        }
+
+        /* Header */
+        header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 0;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 100;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(45deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-decoration: none;
+        }
+
+        .back-btn {
+            background: rgba(255,255,255,0.8);
+            color: #666;
+            padding: 0.8rem 1.5rem;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border: 2px solid #e9ecef;
+        }
+
+        .back-btn:hover {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+            transform: translateY(-1px);
+        }
+
+        /* Main Content */
+        .main-container {
+            max-width: 1000px;
+            margin: 3rem auto;
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 3rem;
+            padding: 0 1rem;
+        }
+
+        /* Post Hero */
+        .post-hero {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 30px;
+            overflow: hidden;
+            box-shadow: 0 25px 70px rgba(0,0,0,0.15);
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+
+        .post-image {
+            width: 100%;
+            height: 500px;
+            object-fit: cover;
+        }
+
+        .post-content {
+            padding: 3rem;
+        }
+
+        .post-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+            color: #333;
+        }
+
+        .post-meta {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+            color: #666;
+            font-size: 1rem;
+        }
+
+        .category-badge {
+            background: linear-gradient(45deg, #10b981, #059669);
+            color: white;
+            padding: 0.5rem 1.5rem;
+            border-radius: 25px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .post-prompt {
+            background: rgba(248, 250, 252, 0.8);
+            border: 2px solid #e2e8f0;
+            border-radius: 20px;
+            padding: 2.5rem;
+            margin: 2.5rem 0;
+            position: relative;
+        }
+
+        .prompt-label {
+            position: absolute;
+            top: -15px;
+            left: 2.5rem;
+            background: white;
+            padding: 0 1.5rem;
+            font-weight: 600;
+            color: #667eea;
+            font-size: 0.9rem;
+        }
+
+        .prompt-text {
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            background: rgba(255,255,255,0.5);
+            padding: 2rem;
+            border-radius: 15px;
+            line-height: 1.6;
+            font-size: 1rem;
+            white-space: pre-wrap;
+            border-left: 4px solid #667eea;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            margin: 2rem 0;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            font-size: 0.95rem;
+        }
+
+        .btn-like {
+            background: linear-gradient(45deg, #ef4444, #dc2626);
+            color: white;
+            box-shadow: 0 10px 30px rgba(239, 68, 68, 0.4);
+        }
+
+        .btn-like.liked {
+            background: linear-gradient(45deg, #10b981, #059669);
+        }
+
+        .btn-copy {
+            background: rgba(102, 126, 234, 0.1);
+            color: #667eea;
+            border: 2px solid #667eea;
+        }
+
+        .btn-share {
+            background: rgba(34, 197, 94, 0.1);
+            color: #10b981;
+            border: 2px solid #10b981;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+        }
+
+        /* Sidebar */
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .stats-card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(15px);
+            padding: 2.5rem;
+            border-radius: 25px;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.3);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 700;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .related-prompts {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 25px;
+            overflow: hidden;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+        }
+
+        .related-title {
+            padding: 2rem 2rem 1rem;
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .related-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            padding: 0 2rem 2rem;
+        }
+
+        .related-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .related-item:hover {
+            background: rgba(102, 126, 234, 0.1);
+            transform: translateX(5px);
+        }
+
+        .related-thumb {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 12px;
+        }
+
+        .related-info h4 {
+            font-size: 1rem;
+            margin-bottom: 0.3rem;
+            color: #333;
+        }
+
+        .related-info p {
+            color: #999;
+            font-size: 0.9rem;
+        }
+
+        /* Comments */
+        .comments {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 25px;
+            padding: 2.5rem;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+        }
+
+        .comment-form {
+            margin-bottom: 2rem;
+        }
+
+        .comment-input {
+            width: 100%;
+            padding: 1.2rem;
+            border: 2px solid #e9ecef;
+            border-radius: 20px;
+            font-family: inherit;
+            resize: vertical;
+            min-height: 100px;
+            margin-bottom: 1rem;
+        }
+
+        .comment-btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 0.8rem 2rem;
+            border-radius: 25px;
+            cursor: pointer;
+            float: right;
+        }
+
+        .comment-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .comment {
+            padding: 1.5rem 0;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            gap: 1rem;
+        }
+
+        .comment:last-child {
+            border-bottom: none;
+        }
+
+        .comment-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .main-container {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+                max-width: 800px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .post-title {
+                font-size: 2rem;
+            }
+
+            .post-content {
+                padding: 2rem 1.5rem;
+            }
+
+            .container {
+                padding: 0 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <a href="index.html" class="logo">AI Prompt Hub</a>
+                <a href="category.html" class="back-btn">← Back to Nature</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="main-container">
+        <!-- Post Content -->
+        <div class="post-hero">
+            <img src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=1000&h=500&fit=crop" 
+                 alt="Mystical Forest" class="post-image">
+            
+            <div class="post-content">
+                <h1 class="post-title">Mystical Enchanted Forest at Golden Hour</h1>
+                
+                <div class="post-meta">
+                    <span class="category-badge">Nature</span>
+                    <span>👁️ 2.5K Views</span>
+                    <span>❤️ 124 Likes</span>
+                    <span>📅 2 days ago</span>
+                    <span>🤖 Gemini</span>
+                </div>
+
+                <div class="post-prompt">
+                    <div class="prompt-label">Copy Prompt</div>
+                    <div class="prompt-text">
+"A highly detailed mystical enchanted forest at golden hour, ancient towering trees covered in glowing bioluminescent moss, soft sunlight rays piercing through dense canopy creating magical light beams, ethereal mist gently rising from forest floor, fireflies floating in air, intricate bark textures, vibrant green foliage with golden highlights, cinematic composition, dramatic depth of field, photorealistic, 8k resolution, award winning photography"
+                    </div>
+                </div>
+
+                <div class="action-buttons">
+                    <button class="btn btn-like liked" onclick="toggleLike(this)">
+                        ❤️ 124 Likes
+                    </button>
+                    <button class="btn btn-copy" onclick="copyPrompt()">
+                        📋 Copy Prompt
+                    </button>
+                    <button class="btn btn-share" onclick="sharePrompt()">
+                        🔗 Share
+                    </button>
+                    <a href="upload.html" class="btn btn-primary">✨ Create Similar</a>
+                </div>
+
+                <div style="margin-top: 3rem; padding-top: 2rem; border-top: 1px solid #e9ecef;">
+                    <h3 style="color: #333; margin-bottom: 1rem;">Creator Notes</h3>
+                    <p style="color: #666; line-height: 1.8;">
+                        Ye prompt Gemini 1.5 Pro ke saath banaya gaya hai. Best results ke liye 
+                        <strong>aspect ratio 16:9</strong> aur <strong>quality: high</strong> use karo. 
+                        Stylize value 400-600 ke beech best hai nature scenes ke liye.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <!-- Stats -->
+            <div class="stats-card">
+                <div class="stat-number">124</div>
+                <div style="color: #666; font-size: 1.1rem;">Likes</div>
+                <div style="color: #999; font-size: 0.9rem; margin-top: 0.5rem;">#12 Trending</div>
+            </div>
+
+            <!-- Related Prompts -->
+            <div class="related-prompts">
+                <div class="related-title">Related Prompts</div>
+                <div class="related-grid">
+                    <div class="related-item">
+                        <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=60&h=60&fit=crop" 
+                             alt="Lake" class="related-thumb">
+                        <div class="related-info">
+                            <h4>Mountain Lake Reflection</h4>
+                            <p>89 likes • 2.3K views</p>
+                        </div>
+                    </div>
+                    <div class="related-item">
+                        <img src="https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=60&h=60&fit=crop" 
+                             alt="Aurora" class="related-thumb">
+                        <div class="related-info">
+                            <h4>Aurora Borealis</h4>
+                            <p>156 likes • 3.4K views</p>
+                        </div>
+                    </div>
+                    <div class="related-item">
+                        <img src="https://images.unsplash.com/photo-1572497925046-9f1877995a9f?w=60&h=60&fit=crop" 
+                             alt="Waterfall" class="related-thumb">
+                        <div class="related-info">
+                            <h4>Tropical Waterfall</h4>
+                            <p>203 likes • 4.5K views</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Comments -->
+            <div class="comments">
+                <h3 style="margin-bottom: 1.5rem; color: #333;">💬 Comments (23)</h3>
+                
+                <div class="comment-form">
+                    <textarea class="comment-input" placeholder="Add your thoughts... What did you create with this prompt?"></textarea>
+                    <button class="comment-btn">Post Comment</button>
+                </div>
+
+                <div class="comment-list">
+                    <div class="comment">
+                        <div class="comment-avatar">AR</div>
+                        <div>
+                            <strong>Amit R.</strong> <span style="color: #999;">• 1h ago</span>
+                            <p>Ye prompt amazing hai! Maine exactly same settings use kiye aur result fantastic aaya 🔥</p>
+                        </div>
+                    </div>
+                    <div class="comment">
+                        <div class="comment-avatar">PS</div>
+                        <div>
+                            <strong>Priya S.</strong> <span style="color: #999;">• 3h ago</span>
+                            <p>Golden hour lighting perfect capture kiya hai. Thanks for sharing! 💚</p>
+                        </div>
+                    </div>
+                    <div class="comment">
+                        <div class="comment-avatar">RK</div>
+                        <div>
+                            <strong>Rahul K.</strong> <span style="color: #999;">• 1 day ago</span>
+                            <p>Copy kiya prompt, result 10/10. Highly recommend! 👍</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Copy prompt to clipboard
+        function copyPrompt() {
+            const promptText = document.querySelector('.prompt-text').textContent;
+            navigator.clipboard.writeText(promptText).then(() => {
+                // Show copy success
+                const btn = event.target;
+                const originalText = btn.textContent;
+                btn.innerHTML = '✅ Copied!';
+                btn.style.background = 'rgba(34, 197, 94, 0.2)';
+                btn.style.color = '#10b981';
+                
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.style.background = 'rgba(102, 126, 234, 0.1)';
+                    btn.style.color = '#667eea';
+                }, 2000);
+            });
+        }
+
+        // Toggle like
+        function toggleLike(btn) {
+            btn.classList.toggle('liked');
+            const likes = btn.querySelector('span') || btn;
+            const currentLikes = parseInt(likes.textContent.match(/\d+/)[0]);
+            likes.textContent = likes.textContent.replace(/\d+/, currentLikes + (btn.classList.contains('liked') ? 1 : -1));
+        }
+
+        // Share prompt
+        function sharePrompt() {
+            if (navigator.share) {
+                navigator.share({
+                    title: document.querySelector('.post-title').textContent,
+                    url: window.location.href
+                });
+            } else {
+                // Fallback copy link
+                navigator.clipboard.writeText(window.location.href);
+                alert('Link copied to clipboard! 📎');
+            }
+        }
+
+        // Image zoom on hover
+        document.querySelector('.post-image').addEventListener('mousemove', (e) => {
+            const img = e.currentTarget;
+            const rect = img.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            img.style.transformOrigin = `${x}px ${y}px`;
+            img.style.transform = 'scale(1.05)';
+        });
+
+        document.querySelector('.post-image').addEventListener('mouseleave', (e) => {
+            e.currentTarget.style.transform = 'scale(1)';
+        });
+      /*---------------mobile menu-----------------------*/
+      function toggleMobileMenu() {
+    document.querySelector('.nav-desktop').classList.toggle('active');
+}
+
+// Close mobile menu on link click
+document.querySelectorAll('nav a').forEach(link => {
+    link.addEventListener('click', () => {
+        document.querySelector('.nav-desktop').classList.remove('active');
+    });
+});
+
+// Global search
+document.getElementById('globalSearch')?.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+        const query = e.target.value;
+        window.location.href = `search.html?q=${encodeURIComponent(query)}`;
+    }
+});
+    </script>
+</body>
+</html>
