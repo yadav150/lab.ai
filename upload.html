@@ -5,472 +5,247 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Upload Prompt - AI Prompt Hub</title>
     <style>
-        * {
+        /* Same CSS as before + new styles below */
+        .creator-section {
+            background: linear-gradient(135deg, rgba(102,126,234,0.1) 0%, rgba(118,75,162,0.1) 100%);
+            border: 2px solid rgba(102,126,234,0.2);
+            border-radius: 20px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .terms-section {
+            background: rgba(248,250,252,0.8);
+            border: 2px solid #e2e8f0;
+            border-radius: 20px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .terms-checkbox {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            font-size: 1rem;
+            margin-top: 1rem;
+        }
+
+        .terms-checkbox input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
             margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+            accent-color: #667eea;
+            transform: scale(1.2);
         }
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            min-height: 100vh;
-            color: #333;
-            padding-top: 80px;
+        .terms-text {
+            line-height: 1.6;
+            color: #444;
         }
 
-        /* Header - Same as homepage */
-        header {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            padding: 1rem 0;
-            position: fixed;
-            top: 0;
-            width: 100%;
-            z-index: 100;
-            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+        .required {
+            color: #ef4444;
         }
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 2rem;
-        }
-
-        .header-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .logo {
-            font-size: 1.8rem;
-            font-weight: 700;
-            background: linear-gradient(45deg, #667eea 0%, #764ba2 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-decoration: none;
-        }
-
-        nav ul {
-            display: flex;
-            list-style: none;
-            gap: 2rem;
-        }
-
-        nav a, .back-btn {
-            text-decoration: none;
-            color: #555;
-            font-weight: 500;
-            transition: color 0.3s ease;
-            padding: 0.5rem 1rem;
-            border-radius: 25px;
-        }
-
-        nav a:hover, .back-btn:hover {
+        .creator-name {
+            font-weight: 600;
             color: #667eea;
-            background: rgba(102, 126, 234, 0.1);
         }
 
-        /* Upload Form */
-        .upload-container {
-            max-width: 800px;
-            margin: 3rem auto;
-            padding: 3rem;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(20px);
-            border-radius: 30px;
-            box-shadow: 0 25px 60px rgba(0,0,0,0.15);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-
-        .upload-header {
+        .success-screen {
+            display: none;
             text-align: center;
-            margin-bottom: 3rem;
+            padding: 4rem 2rem;
         }
 
-        .upload-header h1 {
-            font-size: 2.8rem;
-            background: linear-gradient(45deg, #667eea 0%, #764ba2 100%);
+        .success-icon {
+            font-size: 6rem;
+            background: linear-gradient(45deg, #10b981, #059669);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            margin-bottom: 1rem;
-        }
-
-        .upload-header p {
-            color: #666;
-            font-size: 1.2rem;
-        }
-
-        .form-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 2rem;
             margin-bottom: 2rem;
         }
 
-        .form-group {
-            position: relative;
-        }
-
-        .form-group.full-width {
-            grid-column: 1 / -1;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 0.8rem;
-            font-weight: 600;
-            color: #333;
-            font-size: 1.1rem;
-        }
-
-        input, textarea, select {
-            width: 100%;
-            padding: 1.2rem;
-            border: 2px solid #e9ecef;
-            border-radius: 15px;
-            font-size: 1rem;
-            font-family: inherit;
-            transition: all 0.3s ease;
-            background: rgba(255, 255, 255, 0.8);
-        }
-
-        input:focus, textarea:focus, select:focus {
-            outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-            background: white;
-        }
-
-        textarea {
-            resize: vertical;
-            min-height: 120px;
-        }
-
-        /* Image Upload */
-        .image-upload {
-            border: 3px dashed #e9ecef;
-            border-radius: 20px;
-            padding: 3rem 2rem;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            background: rgba(255, 255, 255, 0.6);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .image-upload:hover {
-            border-color: #667eea;
-            background: rgba(102, 126, 234, 0.05);
-        }
-
-        .image-upload.dragover {
-            border-color: #667eea;
-            background: rgba(102, 126, 234, 0.1);
-            transform: scale(1.02);
-        }
-
-        .upload-icon {
-            font-size: 4rem;
-            margin-bottom: 1rem;
-            background: linear-gradient(45deg, #667eea, #764ba2);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .image-preview {
-            display: none;
-            margin-top: 2rem;
-            border-radius: 15px;
-            overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-        }
-
-        .image-preview img {
-            width: 100%;
-            height: 250px;
-            object-fit: cover;
-        }
-
-        .remove-image {
-            position: absolute;
-            top: 10px;
-            right: 15px;
-            background: rgba(255,0,0,0.8);
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 30px;
-            height: 30px;
-            cursor: pointer;
-            font-size: 1rem;
-            display: none;
-        }
-
-        /* Buttons */
-        .button-group {
-            display: flex;
-            gap: 1rem;
-            justify-content: center;
-            margin-top: 2rem;
-        }
-
-        .btn {
-            padding: 1.2rem 3rem;
-            border: none;
-            border-radius: 50px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .btn-primary {
-            background: linear-gradient(45deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.5);
-        }
-
-        .btn-secondary {
-            background: rgba(255, 255, 255, 0.8);
-            color: #666;
-            border: 2px solid #e9ecef;
-        }
-
-        .btn-secondary:hover {
-            background: white;
-            border-color: #667eea;
-            color: #667eea;
-        }
-
-        .success-message {
-            background: rgba(34, 197, 94, 0.2);
-            border: 1px solid rgba(34, 197, 94, 0.4);
-            color: #059669;
-            padding: 1.5rem;
-            border-radius: 15px;
-            text-align: center;
-            margin-top: 2rem;
-            display: none;
-        }
-
-        /* Responsive */
         @media (max-width: 768px) {
             .form-grid {
                 grid-template-columns: 1fr;
-                gap: 1.5rem;
-            }
-
-            .upload-container {
-                margin: 2rem 1rem;
-                padding: 2rem;
-            }
-
-            .upload-header h1 {
-                font-size: 2.2rem;
-            }
-
-            .button-group {
-                flex-direction: column;
-            }
-
-            nav ul {
-                display: none;
             }
         }
     </style>
 </head>
 <body>
-    <!-- Header -->
-    <header>
-        <div class="container">
-            <div class="header-content">
-                <a href="index.html" class="logo">AI Prompt Hub</a>
-                <a href="index.html" class="back-btn">← Back to Home</a>
-                <nav>
-                    <ul>
-                        <li><a href="index.html">Home</a></li>
-                        <li><a href="#categories">Categories</a></li>
-                        <li><a href="#">Upload</a></li>
-                    </ul>
-                </nav>
-            </div>
-        </div>
-    </header>
+    <!-- Same Header -->
 
-    <!-- Upload Form -->
     <div class="upload-container">
         <div class="upload-header">
-            <h1>Upload New Prompt</h1>
-            <p>Share your amazing AI image prompt with community</p>
+            <h1>📤 Upload New Prompt</h1>
+            <p>Your creation will be credited to you and shared with our community</p>
         </div>
 
+        <!-- Success Screen -->
+        <div class="success-screen" id="successScreen">
+            <div class="success-icon">✅</div>
+            <h2>Prompt Successfully Submitted!</h2>
+            <p id="creatorCredit"></p>
+            <p style="color: #666; margin-top: 1rem;">
+                It will be reviewed and published within 24 hours.<br>
+                <strong>You'll get notified on your email!</strong>
+            </p>
+            <div class="button-group" style="margin-top: 3rem;">
+                <a href="index.html" class="btn btn-primary">← View Home</a>
+                <a href="upload.html" class="btn btn-secondary">Upload Another</a>
+            </div>
+        </div>
+
+        <!-- Upload Form -->
         <form id="uploadForm" enctype="multipart/form-data">
             <div class="form-grid">
                 <div class="form-group">
-                    <label for="title">Prompt Title *</label>
-                    <input type="text" id="title" name="title" placeholder="Enter catchy title for your prompt" required>
+                    <label for="title">Prompt Title <span class="required">*</span></label>
+                    <input type="text" id="title" name="title" placeholder="Enter catchy title..." required>
                 </div>
                 
                 <div class="form-group">
-                    <label for="category">Category *</label>
+                    <label for="category">Category <span class="required">*</span></label>
                     <select id="category" name="category" required>
                         <option value="">Select category</option>
-                        <option value="nature">Nature</option>
-                        <option value="abstract">Abstract</option>
-                        <option value="architecture">Architecture</option>
-                        <option value="portrait">Portraits</option>
-                        <option value="fantasy">Fantasy</option>
-                        <option value="cyberpunk">Cyberpunk</option>
+                        <option value="nature">🌿 Nature</option>
+                        <option value="abstract">🎨 Abstract</option>
+                        <option value="architecture">🏙️ Architecture</option>
+                        <option value="portrait">👤 Portraits</option>
+                        <option value="fantasy">🧚 Fantasy</option>
+                        <option value="cyberpunk">🔥 Cyberpunk</option>
+                        <option value="realistic">📸 Realistic</option>
                     </select>
                 </div>
 
-                <div class="form-group full-width">
-                    <label for="prompt">AI Prompt Text *</label>
-                    <textarea id="prompt" name="prompt" placeholder="Paste your complete Gemini AI prompt here..." required></textarea>
+                <!-- NEW: Creator Section -->
+                <div class="form-group full-width creator-section">
+                    <label>👨‍🎨 Creator Details</label>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                        <div>
+                            <label for="creatorName">Your Name <span class="required">*</span></label>
+                            <input type="text" id="creatorName" name="creatorName" placeholder="Your full name" required>
+                        </div>
+                        <div>
+                            <label for="creatorEmail">Email (optional)</label>
+                            <input type="email" id="creatorEmail" name="creatorEmail" placeholder="your@email.com">
+                        </div>
+                    </div>
+                    <label for="socialLink">Social / Portfolio (optional)</label>
+                    <input type="url" id="socialLink" name="socialLink" placeholder="twitter.com/yourprofile">
                 </div>
 
                 <div class="form-group full-width">
-                    <label>Upload Image *</label>
+                    <label for="prompt">AI Prompt Text <span class="required">*</span></label>
+                    <textarea id="prompt" name="prompt" placeholder="Paste your complete Gemini/Midjourney prompt here..." required></textarea>
+                </div>
+
+                <div class="form-group full-width">
+                    <label>🖼️ Upload Generated Image <span class="required">*</span></label>
+                    <!-- Same image upload code -->
                     <div class="image-upload" id="imageUpload">
                         <div class="upload-icon">🖼️</div>
-                        <p style="font-size: 1.1rem; margin-bottom: 0.5rem; color: #666;">
-                            Click to upload or drag & drop your AI generated image
-                        </p>
-                        <p style="color: #999; font-size: 0.9rem;">PNG, JPG up to 5MB</p>
+                        <p>Click or drag & drop your AI generated image (PNG/JPG, max 5MB)</p>
                         <input type="file" id="imageInput" name="image" accept="image/*" style="display: none;" required>
-                        <button class="remove-image" id="removeImage" title="Remove image">×</button>
+                        <button class="remove-image" id="removeImage">×</button>
                     </div>
-                    <div class="image-preview" id="imagePreview">
-                        <img id="previewImg" src="" alt="Preview">
-                    </div>
+                    <div class="image-preview" id="imagePreview"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="aiModel">AI Model Used</label>
+                    <select id="aiModel" name="aiModel">
+                        <option value="gemini">Gemini (Google)</option>
+                        <option value="dalle">DALL·E 3</option>
+                        <option value="midjourney">Midjourney</option>
+                        <option value="stable-diffusion">Stable Diffusion</option>
+                        <option value="other">Other</option>
+                    </select>
                 </div>
 
                 <div class="form-group">
                     <label for="tags">Tags (optional)</label>
-                    <input type="text" id="tags" name="tags" placeholder="e.g. gemini, realistic, 8k, trending">
+                    <input type="text" id="tags" name="tags" placeholder="8k, realistic, trending, golden hour">
                 </div>
+            </div>
 
-                <div class="form-group">
-                    <label for="model">AI Model</label>
-                    <select id="model" name="model">
-                        <option value="gemini">Gemini (Google)</option>
-                        <option value="dalle">DALL-E 3</option>
-                        <option value="midjourney">Midjourney</option>
-                        <option value="stable-diffusion">Stable Diffusion</option>
-                    </select>
-                </label>
+            <!-- NEW: Terms & Conditions -->
+            <div class="terms-section">
+                <div class="terms-checkbox">
+                    <input type="checkbox" id="termsAccept" name="termsAccept" required>
+                    <label for="termsAccept" style="flex: 1; cursor: pointer;">
+                        <div class="terms-text">
+                            <strong>I confirm:</strong>
+                            <ul style="margin-top: 0.5rem; padding-left: 1.5rem;">
+                                <li>Ye image maine khud generate kiya hai using AI</li>
+                                <li>Main website ke <strong>Terms of Service</strong> follow karunga</li>
+                                <li>Image mein koi copyrighted material nahi hai</li>
+                                <li>Main creator credits dunga aur content share karne ki permission deta hun</li>
+                            </ul>
+                            <small style="color: #666;">
+                                Aapka naam aur credits har jagah show honge. Hum aapke content ko promote karenge!
+                            </small>
+                        </div>
+                    </label>
+                </div>
             </div>
 
             <div class="button-group">
-                <button type="submit" class="btn btn-primary">
-                    🚀 Publish Prompt
+                <button type="submit" class="btn btn-primary" id="submitBtn">
+                    🚀 Publish My Prompt
                 </button>
-                <a href="index.html" class="btn btn-secondary">
-                    ← Cancel
-                </a>
-            </div>
-
-            <div class="success-message" id="successMessage">
-                ✅ Prompt successfully uploaded! It will appear on homepage soon.
+                <a href="index.html" class="btn btn-secondary">← Cancel</a>
             </div>
         </form>
     </div>
 
     <script>
-        // Image upload functionality
-        const imageUpload = document.getElementById('imageUpload');
-        const imageInput = document.getElementById('imageInput');
-        const imagePreview = document.getElementById('imagePreview');
-        const previewImg = document.getElementById('previewImg');
-        const removeImage = document.getElementById('removeImage');
-
-        // Click to upload
-        imageUpload.addEventListener('click', () => imageInput.click());
-
-        // Drag & drop
-        imageUpload.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            imageUpload.classList.add('dragover');
-        });
-
-        imageUpload.addEventListener('dragleave', () => {
-            imageUpload.classList.remove('dragover');
-        });
-
-        imageUpload.addEventListener('drop', (e) => {
-            e.preventDefault();
-            imageUpload.classList.remove('dragover');
-            const files = e.dataTransfer.files;
-            if (files.length > 0) {
-                imageInput.files = files;
-                handleImageUpload(files[0]);
-            }
-        });
-
-        imageInput.addEventListener('change', (e) => {
-            if (e.target.files.length > 0) {
-                handleImageUpload(e.target.files[0]);
-            }
-        });
-
-        function handleImageUpload(file) {
-            if (file && file.type.startsWith('image/')) {
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    previewImg.src = e.target.result;
-                    imagePreview.style.display = 'block';
-                    removeImage.style.display = 'block';
-                };
-                reader.readAsDataURL(file);
-            }
-        }
-
-        removeImage.addEventListener('click', () => {
-            imageInput.value = '';
-            imagePreview.style.display = 'none';
-            removeImage.style.display = 'none';
-        });
-
-        // Form submission
+        // Same image upload code + form submission
         document.getElementById('uploadForm').addEventListener('submit', (e) => {
             e.preventDefault();
             
-            // Simulate upload
+            // Validate terms
+            if (!document.getElementById('termsAccept').checked) {
+                alert('Please accept terms & conditions first! ⚠️');
+                return;
+            }
+
+            // Show loading
+            const submitBtn = document.getElementById('submitBtn');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '⏳ Publishing...';
+            submitBtn.disabled = true;
+
+            // Simulate API call
             setTimeout(() => {
-                document.getElementById('successMessage').style.display = 'block';
-                document.querySelector('.button-group').style.opacity = '0.5';
+                // Hide form, show success
+                document.querySelector('form').style.display = 'none';
+                document.getElementById('successScreen').style.display = 'block';
+                
+                // Show creator credit
+                const creatorName = document.getElementById('creatorName').value;
+                document.getElementById('creatorCredit').innerHTML = 
+                    `Thanks <strong>${creatorName}</strong>! Your prompt is now live on AI Prompt Hub.`;
+
+                // Scroll to top
                 window.scrollTo({ top: 0, behavior: 'smooth' });
                 
-                // Reset form after 3 seconds
-                setTimeout(() => {
-                    document.getElementById('uploadForm').reset();
-                    imagePreview.style.display = 'none';
-                    removeImage.style.display = 'none';
-                    document.getElementById('successMessage').style.display = 'none';
-                    document.querySelector('.button-group').style.opacity = '1';
-                }, 3000);
-            }, 1000);
+            }, 2000);
         });
 
-        // Auto-resize textarea
-        document.querySelectorAll('textarea').forEach(textarea => {
-            textarea.addEventListener('input', function() {
-                this.style.height = 'auto';
-                this.style.height = this.scrollHeight + 'px';
-            });
+        // Auto-fill creator name from localStorage (returning users)
+        if (localStorage.getItem('creatorName')) {
+            document.getElementById('creatorName').value = localStorage.getItem('creatorName');
+        }
+
+        // Save creator name
+        document.getElementById('creatorName').addEventListener('blur', (e) => {
+            localStorage.setItem('creatorName', e.target.value);
         });
+
+        // Same image upload + preview code here...
+        // (Previous image upload script copy karo)
     </script>
 </body>
 </html>
