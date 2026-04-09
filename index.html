@@ -293,31 +293,71 @@
                 padding: 0 1rem;
             }
         }
+
+        .nav-mobile {
+    display: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #666;
+    padding: 0.5rem;
+    border-radius: 8px;
+}
+
+@media (max-width: 768px) {
+    .nav-mobile { display: block; }
+    .nav-desktop { display: none; }
+    .nav-desktop.active {
+        display: block;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: rgba(255,255,255,0.98);
+        backdrop-filter: blur(20px);
+    }
+    .search-box { max-width: 200px; }
+}
+
+.mobile-menu {
+    position: fixed;
+    top: 0;
+    left: -100%;
+    width: 300px;
+    height: 100vh;
+    background: white;
+    box-shadow: 4px 0 20px rgba(0,0,0,0.2);
+    transition: left 0.3s ease;
+    z-index: 1000;
+    padding: 5rem 2rem 2rem;
+}
+
+.mobile-menu.active { left: 0; }
     </style>
 </head>
 <body>
     <!-- Header -->
     <header>
-        <div class="container">
-            <div class="header-content">
-                <a href="#" class="logo">AI Prompt Hub</a>
-                <nav>
-                    <ul>
-                        <li><a href="#home">Home</a></li>
-                        <li><a href="#categories">Categories</a></li>
-                        <li><a href="#upload">Upload</a></li>
-                        <li><a href="#about">About</a></li>
-                    </ul>
-                </nav>
-                <div class="search-box">
-                    <svg class="search-icon" width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
-                    </svg>
-                    <input type="search" placeholder="Search prompts...">
-                </div>
+    <div class="container">
+        <div class="header-content">
+            <a href="index.html" class="logo">AI Prompt Hub</a>
+            <div class="nav-mobile" onclick="toggleMobileMenu()">☰</div>
+            <nav class="nav-desktop">
+                <ul>
+                    <li><a href="index.html">🏠 Home</a></li>
+                    <li><a href="category.html">📂 Categories</a></li>
+                    <li><a href="upload.html">➕ Upload</a></li>
+                    <li><a href="#about">ℹ️ About</a></li>
+                </ul>
+            </nav>
+            <div class="search-box">
+                <svg class="search-icon" width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+                </svg>
+                <input type="search" placeholder="Search prompts..." id="globalSearch">
             </div>
         </div>
-    </header>
+    </div>
+</header>
 
     <!-- Hero Section -->
     <section class="hero" id="home">
