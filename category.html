@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nature Prompts - AI Prompt Hub</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            color: #333;
+            padding-top: 80px;
+        }
+
+        /* Header - Same */
+        header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 0;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 100;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(45deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-decoration: none;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #555;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+        }
+
+        nav a:hover {
+            color: #667eea;
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        /* Category Hero */
+        .category-hero {
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.1) 0%, rgba(102, 126, 234, 0.1) 100%);
+            padding: 4rem 0;
+            text-align: center;
+            border-bottom: 1px solid rgba(255,255,255,0.3);
+        }
+
+        .category-hero-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .category-title {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, #10b981, #059669);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .category-stats {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            margin: 2rem 0;
+            font-size: 1.2rem;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #10b981;
+            display: block;
+        }
+
+        /* Filters */
+        .filters {
+            padding: 2rem 0;
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+        }
+
+        .filter-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .filter-tab {
+            padding: 0.8rem 2rem;
+            border: 2px solid #e9ecef;
+            border-radius: 50px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .filter-tab.active {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border-color: #667eea;
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        /* Prompts Grid */
+        .prompts-section {
+            padding: 4rem 0;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: #333;
+        }
+
+        .prompts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .prompt-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(15px);
+            border-radius: 25px;
+            overflow: hidden;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+            transition: all 0.4s ease;
+            border: 1px solid rgba(255,255,255,0.3);
+            cursor: pointer;
+        }
+
+        .prompt-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 30px 70px rgba(0,0,0,0.2);
+        }
+
+        .prompt-image {
+            width: 100%;
+            height: 240px;
+            object-fit: cover;
+            transition: transform 0.4s ease;
+        }
+
+        .prompt-card:hover .prompt-image {
+            transform: scale(1.1);
+        }
+
+        .prompt-content {
+            padding: 2rem;
+        }
+
+        .prompt-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #333;
+            line-height: 1.3;
+        }
+
+        .prompt-preview {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .prompt-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 1rem;
+            border-top: 1px solid #f0f0f0;
+        }
+
+        .meta-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            color: #999;
+            font-size: 0.95rem;
+        }
+
+        .category-badge {
+            background: rgba(16, 185, 129, 0.2);
+            color: #10b981;
+            padding: 0.3rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .meta-right {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            color: #999;
+        }
+
+        .likes {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .likes:hover {
+            color: #10b981;
+        }
+
+        /* Load More */
+        .load-more {
+            text-align: center;
+            padding: 4rem 0;
+        }
+
+        .load-more-btn {
+            background: linear-gradient(45deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 1.2rem 3rem;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        .load-more-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 20px 50px rgba(102, 126, 234, 0.5);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .category-title {
+                font-size: 2.5rem;
+            }
+
+            .category-stats {
+                flex-direction: column;
+                gap: 1.5rem;
+            }
+
+            .prompts-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            nav ul {
+                display: none;
+            }
+
+            .container {
+                padding: 0 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <a href="index.html" class="logo">AI Prompt Hub</a>
+                <nav>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="#">Categories</a></li>
+                        <li><a href="upload.html">Upload</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Category Hero -->
+    <section class="category-hero">
+        <div class="container">
+            <div class="category-hero-content">
+                <h1 class="category-title">🌿 Nature</h1>
+                <p style="font-size: 1.3rem; color: #666; margin-bottom: 2rem;">
+                    Beautiful landscapes, serene forests, and breathtaking natural scenes
+                </p>
+                <div class="category-stats">
+                    <div class="stat">
+                        <span class="stat-number">1,247</span>
+                        Prompts
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number">89K</span>
+                        Views
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number">12K</span>
+                        Likes
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Filters -->
+    <section class="filters">
+        <div class="container">
+            <div class="filter-tabs">
+                <div class="filter-tab active" data-filter="all">All Time</div>
+                <div class="filter-tab" data-filter="week">This Week</div>
+                <div class="filter-tab" data-filter="month">This Month</div>
+                <div class="filter-tab" data-filter="trending">Trending</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Prompts Grid -->
+    <section class="prompts-section">
+        <div class="container">
+            <h2 class="section-title">Latest Nature Prompts</h2>
+            <div class="prompts-grid" id="promptsGrid">
+                <!-- Prompt cards will be populated by JS -->
+            </div>
+            <div class="load-more">
+                <button class="load-more-btn" onclick="loadMore()">Load More Prompts</button>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Sample prompts data
+        const naturePrompts = [
+            {
+                id: 1,
+                title: "Mystical enchanted forest at golden hour",
+                preview: "Ancient trees covered in glowing moss, soft sunlight rays piercing through canopy, magical mist, cinematic lighting, highly detailed...",
+                image: "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=400&h=240&fit=crop",
+                likes: 124,
+                views: 2567,
+                category: "nature"
+            },
+            {
+                id: 2,
+                title: "Serene mountain lake reflection",
+                preview: "Crystal clear alpine lake perfectly reflecting snow-capped mountains, wildflowers in foreground, golden hour lighting...",
+                image: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=240&fit=crop",
+                likes: 89,
+                views: 1890,
+                category: "nature"
+            },
+            {
+                id: 3,
+                title: "Aurora borealis over frozen lake",
+                preview: "Vibrant northern lights dancing above icy lake, starry night sky, reflections on ice, cold blue and green tones...",
+                image: "https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=400&h=240&fit=crop",
+                likes: 156,
+                views: 3421,
+                category: "nature"
+            },
+            {
+                id: 4,
+                title: "Tropical waterfall paradise",
+                preview: "Massive waterfall cascading into emerald pool, lush tropical rainforest, sunlight filtering through canopy, vibrant greens...",
+                image: "https://images.unsplash.com/photo-1572497925046-9f1877995a9f?w=400&h=240&fit=crop",
+                likes: 203,
+                views: 4567,
+                category: "nature"
+            },
+            {
+                id: 5,
+                title: "Desert sunset dunes",
+                preview: "Golden sand dunes at sunset, dramatic shadows, warm orange and pink sky, vast empty desert landscape...",
+                image: "https://images.unsplash.com/photo-1517423440428-d5e6c1be73d5?w=400&h=240&fit=crop",
+                likes: 98,
+                views: 2234,
+                category: "nature"
+            },
+            {
+                id: 6,
+                title: "Cherry blossom spring garden",
+                preview: "Japanese garden in full cherry blossom bloom, pink petals falling gently, traditional stone lantern, serene atmosphere...",
+                image: "https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?w=400&h=240&fit=crop",
+                likes: 167,
+                views: 2987,
+                category: "nature"
+            }
+        ];
+
+        let visiblePrompts = 0;
+        const promptsPerLoad = 3;
+
+        // Render prompts
+        function renderPrompts(prompts) {
+            const grid = document.getElementById('promptsGrid');
+            prompts.slice(0, visiblePrompts + promptsPerLoad).forEach(prompt => {
+                const card = document.createElement('div');
+                card.className = 'prompt-card';
+                card.innerHTML = `
+                    <img src="${prompt.image}" alt="${prompt.title}" class="prompt-image" loading="lazy">
+                    <div class="prompt-content">
+                        <h3 class="prompt-title">${prompt.title}</h3>
+                        <p class="prompt-preview">${prompt.preview}</p>
+                        <div class="prompt-meta">
+                            <div class="meta-left">
+                                <span class="category-badge">${prompt.category}</span>
+                            </div>
+                            <div class="meta-right">
+                                <div class="likes">
+                                    ❤️ ${prompt.likes}
+                                </div>
+                                <span>👁️ ${prompt.views.toLocaleString()}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                card.onclick = () => window.location.href = `post.html?id=${prompt.id}`;
+                grid.appendChild(card);
+            });
+        }
+
+        // Initial load
+        function loadInitial() {
+            visiblePrompts = promptsPerLoad;
+            renderPrompts(naturePrompts);
+        }
+
+        // Load more
+        window.loadMore = function() {
+            visiblePrompts += promptsPerLoad;
+            renderPrompts(naturePrompts);
+            
+            if (visiblePrompts >= naturePrompts.length) {
+                document.querySelector('.load-more-btn').style.display = 'none';
+            }
+        };
+
+        // Filter tabs
+        document.querySelectorAll('.filter-tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+                
+                // Simulate filter change
+                setTimeout(() => {
+                    document.getElementById('promptsGrid').innerHTML = '';
+                    visiblePrompts = promptsPerLoad;
+                    loadInitial(); // Reload with filter effect
+                }, 300);
+            });
+        });
+
+        // Initialize
+        loadInitial();
+
+        // Intersection Observer for lazy loading
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.src = entry.target.dataset.src;
+                    observer.unobserve(entry.target);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
